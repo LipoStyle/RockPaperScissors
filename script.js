@@ -1,97 +1,79 @@
-// declaring an array with all possible values
-const choiceValue = ["Rock", "Paper", "Scissors"];
-
-// declaring the play of computer
-function computerPlay() {
-  let randomNumber = Math.floor(Math.random() * 3);
-  return choiceValue[randomNumber];
-    // console.log(computerChoice);
-}
-
-// declaraing the play of user
-function userPlay(){
-  let userChoice = prompt("Enter a value for the play u hava to choose 'Rock - Paper - Scissors' or else u go with 'Rock' xD", "Rock");
-  if (userChoice.toLowerCase() === "Rock".toLowerCase()){
-    return "Rock";
+// declaring an array with all possible values for the cumputer play
+const computerAnswerList = ["Rock", "Paper", "Scissors"];
+// selecting all tags
+const buttons = document.querySelectorAll("button");
+const userPlays = document.querySelector(".user-play");
+const pcPlays = document.querySelector(".computer-play");
+const score = document.querySelector(".score");
+const winner = document.querySelector(".winner");
+// global variable for player choice
+let userPlay = " ";
+let pcPlay = " ";
+//winning condition for each team
+let uwinCondition = 0;
+let cwinCondition = 0;
+// adding event listener on buttons
+buttons.forEach(node => node.addEventListener("click",playRound));
+// declaring the fancion for the play of the round
+function playRound(e){   
+  //declaring user play
+  userPlay = e.target.innerText;
+  //declaring computer play
+  pcPlay = computerPlay();
+  let winCondition = winnerOfRound(userPlay, pcPlay);
+  // showing player choice and pc choice to scoreboard
+  if(winCondition == "human"){
+    uwinCondition++;
+    userPlays.innerText = "You choose: " + userPlay;
+    score.innerText = `${uwinCondition} : ${cwinCondition}`;
+    pcPlays.innerText = "Your PC choose: " + pcPlay;
+    winner.innerText = "Wow! Human wins the round GRATS!";
+  }else if(winCondition == "computer"){
+    cwinCondition++;
+    userPlays.innerText = "You choose: " + userPlay;
+    score.innerText = `${uwinCondition} : ${cwinCondition}`;
+    pcPlays.innerText = "Your PC choose: " + pcPlay;
+    winner.innerText = "Wow! Computer wins the round GRATS!";
+  }else {
+    userPlays.innerText = "You choose: " + userPlay;
+    score.innerText = `${uwinCondition} : ${cwinCondition}`;
+    pcPlays.innerText = "Your PC choose: " + pcPlay;
+    winner.innerText = "Wow! We have Tie here lets do it !";
   }
-  else if(userChoice.toLowerCase() === "Paper".toLowerCase()){
-    return "Paper";
-  }
-  else if(userChoice.toLowerCase() === "Scissors".toLowerCase()){
-    return "Scissors";
-  }
-  else{
-    return "Rock";
-  }
-}
-// declaration of the round
-function playRound(playerSelection, computerSelection ){
-  // the outcome will hold the result of the play
-  let outcome;
-
-  // printing both of the choices
-  console.log(`u choose ${playerSelection} --- pc choose ${computerSelection}`);
-
-  // computing the outcome
-  if (computerSelection === playerSelection) {
-    outcome = "tie";
-  }
-  else if(computerSelection == "Rock" && playerSelection == "Paper"){
-    outcome = "humanWins";
-  }
-  else if(computerSelection == "Rock" && playerSelection == "Scissors"){
-    outcome = "pcWins";
-  }
-  else if(computerSelection == "Paper" && playerSelection == "Rock"){
-    outcome = "pcWins";
-  }
-  else if(computerSelection == "Paper" && playerSelection == "Scissors"){
-    outcome = "humanWins";
-  }
-  else if(computerSelection == "Scissors" && playerSelection == "Rock"){
-    outcome = "humanWins";
-  }
-  else if(computerSelection =="Scissors" && playerSelection == "Paper"){
-    outcome = "pcWins";
-  }
-  else{
-    outcome = "Something went wrong";
-  }
-  return outcome;
-}
-// declaration of the game 
-function game(){
-  // Declaring and initializing the value of winner counter to deterine who is the winner
-  let pcIsWinner = 0;
-  let userIsWinner = 0;
-
-  // the loop will go as as far as we want, this indicates the round that we will play
-  let howManyRounds = Number(prompt("How Many Round You Want to play"));
-  for(let i=0; i<howManyRounds; i++){
-    // initializing the choices from each player
-    let pc = computerPlay();
-    let human = userPlay();
-    let winnerOfRound = playRound(human,pc);
-    if(winnerOfRound === "pcWins"){
-      pcIsWinner++;
+  if((uwinCondition == 5) || (cwinCondition ==5)){
+    if(uwinCondition == 5){
+      winner.innerText = "WOWOWOWOWOWOW HUMAN WINS THE GAME!!";
     }
-    else if(winnerOfRound === "humanWins"){
-      userIsWinner++;
+    if(cwinCondition == 5){
+      winner.innerText = "WOWOWOWOWOWOW COMPUTER WINS THE GAME!!";
     }
-    else{
-      console.log("Wow We have a tie here go again boys!");
-    }
-    }
-    //and the winnier is
-    if(pcIsWinner > userIsWinner){
-      console.log("PC master is the winner! yo");
-    }
-    else if(pcIsWinner < userIsWinner){
-      console.log("Hmmmm You cant compare with the beast! human is the winner!");
-    }
-    else{
-      console.log("Good job everyone we have a tie here!");
+    buttons.forEach(node =>node.removeEventListener("click", playRound));
   }
 }
-//playing the game
-game();
+// declaring the function for computer play
+function computerPlay(){
+  let i = Math.floor(Math.random(10)*3);
+  return computerAnswerList[i];
+}
+// declaring the function who will find the winner of the round
+function winnerOfRound(human,computer){
+  let winnerIs = " ";
+  if(human.toLowerCase() === computer.toLowerCase()){
+    winnerIs = "tie";
+  } else if(human.toLowerCase() === "rock" && computer.toLowerCase() === "paper"){
+    winnerIs = "computer";
+  }else if(human.toLowerCase() === "rock" && computer.toLowerCase() === "scissors"){
+    winnerIs = "human";
+  } else if(human.toLowerCase() === "paper" && computer.toLowerCase() === "rock"){
+    winnerIs = "human";
+  }else if(human.toLowerCase() === "paper" && computer.toLowerCase() === "scissors"){
+    winnerIs = "computer";
+  } else if(human.toLowerCase() === "scissors" && computer.toLowerCase() === "rock"){
+    winnerIs = "computer";
+  } else if(human.toLowerCase() === "scissors" && computer.toLowerCase() === "paper"){
+    winnerIs = "human";
+  } else{
+    winnerIs = "something went wrong";
+  }
+  return winnerIs;
+}
